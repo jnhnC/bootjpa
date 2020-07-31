@@ -2,6 +2,7 @@ package com.example.bootjpa;
 
 import com.example.bootjpa.domain.Address;
 import com.example.bootjpa.domain.Member;
+import com.example.bootjpa.domain.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,10 @@ public class InitDb {
             member.setName("userA");
             member.setAddress(new Address("서울","남부순환로1430","870-1"));
             em.persist(member);
+
+            Order order = Order.createOrder(member) ;
+            em.persist(order);
+
         }
 
         public void dbInit2() {
@@ -39,6 +44,9 @@ public class InitDb {
             member.setName("userB");
             member.setAddress(new Address("서울","남부순환로1720-1","651-2"));
             em.persist(member);
+
+            Order order = Order.createOrder(member) ;
+            em.persist(order);
         }
     }
 }

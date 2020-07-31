@@ -6,10 +6,7 @@ import com.example.bootjpa.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -22,6 +19,7 @@ import static java.util.stream.Collectors.toList;
 public class MemberApiController {
     private final MemberService memberService;
 
+    //등록
     //엔티티를 직접받는 경우
     //엔티티를 바로 받으면 Member 스펙이 변경 될 경우 api를 사용하는 곳에 에러가 발생할 수 있으므로 사용 X
     @PostMapping("/api/v1/members")
@@ -29,7 +27,7 @@ public class MemberApiController {
         Long id = memberService.join(member);
         return new CreateMemberResponse(id);
     }
-
+    //등록
     //DTO로 받고 Member생성해서 넣어주는 경우 스펙이 바뀌어도 api 자체에서만 바꾸면 다른 곳에 영양을 받지 않는다.
     //넘기거나 받거나 할때 항상 DTO를 생성하여 사용하는게 최적!
     @PostMapping("/api/v2/members")
@@ -42,7 +40,19 @@ public class MemberApiController {
         return new CreateMemberResponse(id);
     }
 
+    //수정
+    @PutMapping("/api/v2/members/{id}")
+    public UpdateMemberResponse updateMemberV2(
+            @PathVariable("id") Long id,
+            @RequestBody @Valid UpdateMemberRequest request){
 
+        memberService.update(id, request.getName()); //업데이트 끝
+        Member findMember = memberService.findOne(id); //끝난후 업데이트 내용 확인하기
+        return new UpdateMemberResponse(findMember.getId(), findMember.getName());
+    }
+
+
+    //기본 엔티티 조회
     //엔티티 받을 시에도 마찬가지로 DTO를 사용한다
     @GetMapping("/api/v2/members")
     public Result member(){
@@ -54,7 +64,17 @@ public class MemberApiController {
         return new Result(collect);
     }
 
+    //Member로 Order 내용 함께 조회
+    //엔티티 받을 시에도 마찬가지로 DTO를 사용한다
+    @GetMapping("/api/v2/members")
+    public Result memberWithOrder(){
+        List<Member> findMembers = memberService.findMembers();
+        List<MemberDto> collect = findMembers.stream()
+                .map(member -> new MemberDto(member.getName()))
+                .collect(toList());
 
+        return new Result(collect);
+    }
 
 
     @Data
@@ -87,5 +107,18 @@ public class MemberApiController {
     @AllArgsConstructor
     static class MemberDto {
         private String name;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private class UpdateMemberResponse {
+        private Long id;
+        private String name;
+    }
+
+    @Data
+    private class UpdateMemberRequest {
+        private String name;
+
     }
 }

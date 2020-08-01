@@ -1,6 +1,5 @@
 package com.example.bootjpa.domain;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,10 +16,10 @@ public class Member {
     @Column(name="member_id")
     private Long id;
 
+  //  @NotEmpty는 DTO에 적어준다
     private String name;
 
     @Embedded
     private Address address;
-
 
 }

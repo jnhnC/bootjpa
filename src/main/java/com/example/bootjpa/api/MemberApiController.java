@@ -51,11 +51,24 @@ public class MemberApiController {
         return new UpdateMemberResponse(findMember.getId(), findMember.getName());
     }
 
+    //기본 엔티티 조회
+    // 엔티티 직접 노출
+    @GetMapping("/api/v1/members")
+    public  List<Member> memberV1(){
+        List<Member> findMembers = memberService.findMembers();
+       /* List<MemberDto> collect = findMembers.stream()
+                .map(member -> new MemberDto(member.getName()))
+                .collect(toList());*/
+
+        return findMembers;
+    }
+
+
 
     //기본 엔티티 조회
     //엔티티 받을 시에도 마찬가지로 DTO를 사용한다
     @GetMapping("/api/v2/members")
-    public Result member(){
+    public Result memberV2(){
         List<Member> findMembers = memberService.findMembers();
         List<MemberDto> collect = findMembers.stream()
                 .map(member -> new MemberDto(member.getName()))
@@ -66,7 +79,7 @@ public class MemberApiController {
 
     //Member로 Order 내용 함께 조회
     //엔티티 받을 시에도 마찬가지로 DTO를 사용한다
-    @GetMapping("/api/v2/members")
+    @GetMapping("/api/v2/memberWithOrder")
     public Result memberWithOrder(){
         List<Member> findMembers = memberService.findMembers();
         List<MemberDto> collect = findMembers.stream()

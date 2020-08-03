@@ -1,4 +1,4 @@
-package com.example.bootjpa.responsitory;
+package com.example.bootjpa.repository;
 
 import com.example.bootjpa.domain.Order;
 import org.springframework.data.jpa.repository.EntityGraph;
